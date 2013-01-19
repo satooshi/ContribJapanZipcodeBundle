@@ -19,8 +19,7 @@ class ZipcodeController extends Controller
     // action
 
     /**
-     * @Route(
-     *     "/{zipcode}",
+     * @Route("/{zipcode}",
      *     name = "zipcode_list",
      *     requirements = { "zipcode": "\d{7}" }
      * )
@@ -29,15 +28,14 @@ class ZipcodeController extends Controller
      */
     public function listAction($zipcode)
     {
-        $repository = $this->getHomeZipcodeRepository();
-        $entities = $repository->findByZipcode($zipcode);
-
-        return $entities;
+        return array(
+            'home'   => $this->listHomeAction($zipcode),
+            'office' => $this->listOfficeZipcodeAction($zipcode),
+        );
     }
 
     /**
-     * @Route(
-     *     "/home/{zipcode}",
+     * @Route("/home/{zipcode}",
      *     name = "zipcode_home_list",
      *     requirements = { "zipcode": "\d{7}" }
      * )
@@ -46,24 +44,20 @@ class ZipcodeController extends Controller
      */
     public function listHomeAction($zipcode)
     {
-        $repository = $this->getHomeZipcodeRepository();
-        $entities = $repository->findByZipcode($zipcode);
-
-        return $entities;
+        return $this->getHomeZipcodeRepository()->findByZipcode($zipcode);
     }
 
     /**
-     * @Route(
-     *     "/office/{zipcode}",
+     * @Route("/office/{zipcode}",
      *     name = "zipcode_office_list",
      *     requirements = { "zipcode": "\d{7}" }
      * )
      * @Method("GET")
      * @Json(serialize = true, serializeGroups = {"list"})
      */
-    public function listOfficeZipcodeAction()
+    public function listOfficeZipcodeAction($zipcode)
     {
-
+        return $this->getOfficeZipcodeRepository()->findByZipcode($zipcode);
     }
 
     // internal method
@@ -75,5 +69,14 @@ class ZipcodeController extends Controller
     protected function getHomeZipcodeRepository($name = null)
     {
         return $this->getDoctrine()->getManager($name)->getRepository('ContribJapanZipcodeBundle:HomeZipcode');
+    }
+
+    /**
+     * @param string $name The object manager name (null for the default one)
+     * @return \Contrib\JapanZipcodeBundle\Repository\OfficeZipcodeRepository
+     */
+    protected function getOfficeZipcodeRepository($name = null)
+    {
+        return $this->getDoctrine()->getManager($name)->getRepository('ContribJapanZipcodeBundle:OfficeZipcode');
     }
 }

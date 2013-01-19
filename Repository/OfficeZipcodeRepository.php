@@ -4,9 +4,9 @@ namespace Contrib\JapanZipcodeBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
-use Contrib\JapanZipcodeBundle\Adapter\HomeZipcode\FindByZipcode;
+use Contrib\JapanZipcodeBundle\Adapter\OfficeZipcode\FindByZipcode;
 
-class HomeZipcodeRepository extends EntityRepository
+class OfficeZipcodeRepository extends EntityRepository
 {
     /**
      * @param string  $zipcode
@@ -20,6 +20,6 @@ class HomeZipcodeRepository extends EntityRepository
 
         return $adapter
             ->execute($zipcode, $limit, $offset)
-            ->fetchAll(\PDO::FETCH_CLASS, 'Contrib\JapanZipcodeBundle\Entity\HomeZipcode');
+            ->fetchAll(\PDO::FETCH_CLASS, 'Contrib\JapanZipcodeBundle\Entity\OfficeZipcode');
     }
 }
