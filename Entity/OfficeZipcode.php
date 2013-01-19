@@ -35,6 +35,7 @@ class OfficeZipcode extends Zipcode
      * @ORM\Column(name="office_name", type="string", length=160, nullable=true)
      * @Assert\Length(max=160)
      * @Groups({"list", "detail"})
+     * @SerializedName("officeName")
      */
     protected $officeName;
 
@@ -44,6 +45,7 @@ class OfficeZipcode extends Zipcode
      * @ORM\Column(name="office_name_kana", type="string", length=100, nullable=true)
      * @Assert\Length(max=100)
      * @Groups({"list", "detail"})
+     * @SerializedName("officeNameKana")
      */
     protected $officeNameKana;
 
@@ -53,6 +55,7 @@ class OfficeZipcode extends Zipcode
      * @ORM\Column(name="branch_name", type="string", length=40, nullable=true)
      * @Assert\Length(max=40)
      * @Groups({"list", "detail"})
+     * @SerializedName("branchName")
      */
     protected $branchName;
 
