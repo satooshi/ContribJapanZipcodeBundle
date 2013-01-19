@@ -1,0 +1,27 @@
+{
+    "name": "satooshi/symfony2contrib-japan-zipcode-bundle",
+    "description": "Symfony2 contrib Japan zipcode bundle",
+    "keywords": ["contrib", "bundle", "zipcode", "japan", "api"],
+    "homepage": "https://github.com/satooshi/ContribJaapnZipcodeBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Kitamura Satoshi",
+            "email": "with.no.parachute@gmail.com",
+            "homepage": "https://www.facebook.com/satooshi.jp"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/symfony": ">=2.1",
+        "sensio/framework-extra-bundle": ">=2.1",
+        "jms/serializer-bundle": "1.0.*@dev",
+        "satooshi/symfony2contrib-http-foundation-extra-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-0": { "Contrib\\JapanZipcodeBundle": "" }
+    },
+    "target-dir": "Contrib/JapanZipcodeBundle"
+}
