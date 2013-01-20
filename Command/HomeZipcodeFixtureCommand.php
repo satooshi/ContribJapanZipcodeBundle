@@ -45,7 +45,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         $this->transactWorkHomeZipcode($em, $path);
         $driver->commit();
 
-        // home_zip_code
+        // home_zipcode
         $driver->beginTransaction();
         $this->transactHomeZipcode($em);
         $driver->commit();

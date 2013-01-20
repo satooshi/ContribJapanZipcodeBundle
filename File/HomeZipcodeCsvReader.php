@@ -2,7 +2,8 @@
 
 namespace Contrib\JapanZipcodeBundle\File;
 
-use Contrib\CommonBundle\Adapter\WorkHomeZipcode\Insert;
+use Doctrine\ORM\EntityManager;
+use Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode\Insert;
 use Contrib\CommonBundle\File\CsvSequentialReader;
 
 class HomeZipcodeCsvReader extends CsvSequentialReader
@@ -102,7 +103,7 @@ class HomeZipcodeCsvReader extends CsvSequentialReader
     protected function map($data)
     {
         return array(
-            'zip_code'    => $data[2],
+            'zipcode'     => $data[2],
             'old_zipcode' => $data[1],
             'jiscode'     => $data[0],
             'pref'        => $data[6],

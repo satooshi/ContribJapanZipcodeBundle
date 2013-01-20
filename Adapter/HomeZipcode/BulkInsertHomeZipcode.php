@@ -15,10 +15,10 @@ class BulkInsertHomeZipcode extends BaseAdapter
     {
         return "
 insert
-    home_zip_code
+    home_zipcode
 select
     t.id
-,   t.zip_code
+,   t.zipcode
 ,   t.pref_kana
 ,   t.city_kana
 ,   case
@@ -48,7 +48,7 @@ from
 -- one town per zip code
     select
         t1_1.id
-    ,   t1_1.zip_code
+    ,   t1_1.zipcode
     ,   t1_1.pref_kana
     ,   t1_1.city_kana
     ,   t1_1.town_kana
@@ -56,25 +56,25 @@ from
     ,   t1_1.city
     ,   t1_1.town
     from
-        temp_home_zip_code as t1_1
+        temp_home_zipcode as t1_1
         inner join
         (
             select
-                ta1.zip_code
+                ta1.zipcode
             from
-                temp_home_zip_code as ta1
+                temp_home_zipcode as ta1
             group by
-                ta1.zip_code
+                ta1.zipcode
             having
-                count(ta1.zip_code) = 1
-        ) as t2_1 on t1_1.zip_code = t2_1.zip_code
+                count(ta1.zipcode) = 1
+        ) as t2_1 on t1_1.zipcode = t2_1.zipcode
 
     union
 
 -- more than one town per zip code
     select
         t1_2.id
-    ,   t1_2.zip_code
+    ,   t1_2.zipcode
     ,   t1_2.pref_kana
     ,   t1_2.city_kana
     ,   t1_2.town_kana
@@ -82,27 +82,27 @@ from
     ,   t1_2.city
     ,   t1_2.town
     from
-        temp_home_zip_code as t1_2
+        temp_home_zipcode as t1_2
         inner join
         (
             select
-                ta1.zip_code
+                ta1.zipcode
             from
-                temp_home_zip_code as ta1
+                temp_home_zipcode as ta1
             where
                 ta1.flg4 = 1
             group by
-                ta1.zip_code
+                ta1.zipcode
             having
-                count(ta1.zip_code) > 1
-        ) as t2_2 on t1_2.zip_code = t2_2.zip_code
+                count(ta1.zipcode) > 1
+        ) as t2_2 on t1_2.zipcode = t2_2.zipcode
 
     union
 
 -- one town divided into multiple records per zip code
     select
         t1_3.id
-    ,   t1_3.zip_code
+    ,   t1_3.zipcode
     ,   t1_3.pref_kana
     ,   t1_3.city_kana
     ,   case t1_3.town_kana_1
@@ -117,7 +117,7 @@ from
     (
         select
             ta1.id
-        ,   ta1.zip_code
+        ,   ta1.zipcode
         ,   ta1.pref_kana
         ,   ta1.city_kana
         ,   ta1.pref
@@ -148,24 +148,24 @@ from
                 tb1.*
             ,   tb1.id - tb2.min_id + 1 as row_id
             from
-                temp_home_zip_code as tb1
+                temp_home_zipcode as tb1
                 inner join
                 (
                     select
-                        tc1.zip_code
+                        tc1.zipcode
                     ,   min(tc1.id) as min_id
                     from
-                        temp_home_zip_code as tc1
+                        temp_home_zipcode as tc1
                     where
                         tc1.flg4 = 0
                     group by
-                        tc1.zip_code
+                        tc1.zipcode
                     having
-                        count(tc1.zip_code) > 1
-                ) as tb2 on tb1.zip_code = tb2.zip_code
+                        count(tc1.zipcode) > 1
+                ) as tb2 on tb1.zipcode = tb2.zipcode
         ) as ta1
         group by
-            ta1.zip_code
+            ta1.zipcode
     ) as t1_3
 ) as t";
     }
