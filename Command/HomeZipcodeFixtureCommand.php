@@ -54,6 +54,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
     protected function transactWorkHomeZipcode($em, $path)
     {
         $this->truncateWorkHomeZipcode($em);
+        $this->console('truncated w_home_zipcode');
 
         $reader = new HomeZipcodeCsvReader($em, 0);
         $client = new CsvFileClient($path);
@@ -67,6 +68,8 @@ class HomeZipcodeFixtureCommand extends BaseCommand
     protected function transactHomeZipcode($em)
     {
         $this->truncateHomeZipcode($em);
+        $this->console('truncated home_zipcode');
+
         $this->insertHomeZipcode($em);
 
         $count = $this->countHomeZipcode($em);

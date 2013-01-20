@@ -4,9 +4,26 @@ namespace Contrib\JapanZipcodeBundle\Adapter;
 
 abstract class RepositoryAdapter
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     protected $em;
+
+    /**
+     * @var \PDO
+     */
     protected $driver;
+
+    /**
+     * @var \PDOStatement
+     */
     protected $statement;
+
+    /**
+     * Cached SQL.
+     *
+     * @var string
+     */
     protected $sql;
 
     public function __construct($em)
@@ -89,6 +106,14 @@ abstract class RepositoryAdapter
 
     // statement
 
+    /**
+     * Execute prepared statement.
+     *
+     * @param string $sql
+     * @param array  $params
+     * @return PDOStatement
+     * @throws \RuntimeException
+     */
     protected function executeStatement($sql, array $params = array())
     {
         if (!isset($this->statement) || $this->statement->queryString !== $sql) {
@@ -104,19 +129,16 @@ abstract class RepositoryAdapter
         return $this->statement;
     }
 
+    /**
+     * Execute scalar query.
+     *
+     * @param string $sql
+     * @param array  $params
+     * @return integer Scalar result.
+     */
     protected function executeScalar($sql, array $params = array())
     {
-        if (!isset($this->statement) || $this->statement->queryString !== $sql) {
-            $this->statement = $this->prepare($sql);
-        }
-
-        $this->bindParams($params);
-
-        if ($this->statement->execute() === false) {
-            throw new \RuntimeException();
-        }
-
-        $scalar = $this->statement->fetchColumn(0);
+        $scalar = $this->executeStatement($sql, $params)->fetchColumn(0);
 
         if (is_numeric($scalar)) {
             return (int)$scalar;
@@ -138,6 +160,21 @@ abstract class RepositoryAdapter
     }
 
     /**
+     * Execute count query.
+     *
+     * @param string $tableName
+     * @return integer
+     */
+    protected function count($tableName)
+    {
+        $sql = sprintf('select count(*) count from %s', $tableName);
+
+        return $this->executeScalar($sql);
+    }
+
+    /**
+     * Execute insert statement.
+     *
      * @param string $tableName Table name.
      * @param array  $params    [col1 => value1, col2 => value2]
      * @param array  $types     [col1 => type1, col2 => type2]
@@ -160,6 +197,8 @@ abstract class RepositoryAdapter
     }
 
     /**
+     * Execute multiple insert statement.
+     *
      * @param string $tableName Table name.
      * @param array  $params    [col1 => value1, col2 => value2]
      * @param array  $types     [col1 => type1, col2 => type2]
@@ -196,12 +235,19 @@ abstract class RepositoryAdapter
         return $this->executeUpdate($this->sql, $bindParams);
     }
 
+    /**
+     * Return last insert id.
+     *
+     * @return mixed.
+     */
     protected function getLastInsertId()
     {
         return $this->driver->lastInsertId();
     }
 
     /**
+     * Execute update statement.
+     *
      * @param string $tableName      Table name.
      * @param array  $params         [col1 => value1, col2 => value2]
      * @param array  $types          [col1 => type1, col2 => type2]
@@ -246,6 +292,8 @@ abstract class RepositoryAdapter
     }
 
     /**
+     * Execute delete statement.
+     *
      * @param string $tableName       Table name.
      * @param array  $identifiers     [col1 => value1, col2 => value2]
      * @param array  $identifierTypes [col1 => type1, col2 => type2]
@@ -276,6 +324,19 @@ abstract class RepositoryAdapter
         }
 
         return $this->executeUpdate($this->sql, $bindParams);
+    }
+
+    /**
+     * Execute truncate statement.
+     *
+     * @param string $tableName
+     * @return integer
+     */
+    protected function truncate($tableName)
+    {
+        $sql = sprintf('truncate %s', $tableName);
+
+        return $this->driver->exec($sql);
     }
 
     // utils
