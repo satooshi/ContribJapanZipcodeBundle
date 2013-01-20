@@ -2,7 +2,7 @@
 
 namespace Contrib\JapanZipcodeBundle\Adapter\OfficeZipcode;
 
-class BulkInsertOfficeZipcode extends BaseAdapter
+class BulkInsert extends BaseAdapter
 {
     public function execute()
     {
