@@ -2,6 +2,11 @@
 
 namespace Contrib\JapanZipcodeBundle\Command;
 
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Doctrine\DBAL\Connection;
 use Contrib\CommonBundle\Adapter\WorkHomeZipcode\Insert;
 use Contrib\JapanZipcodeBundle\File\HomeZipcodeCsvReader;
 use Contrib\CommonBundle\File\CsvFileClient;
