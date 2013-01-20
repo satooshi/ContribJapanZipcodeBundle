@@ -1,6 +1,6 @@
 <?php
 
-namespace Contrib\JapanZipcodeBundle\Adapter\HomeZipcode;
+namespace Contrib\JapanZipcodeBundle\Adapter\OfficeZipcode;
 
 class Truncate extends BaseAdapter
 {

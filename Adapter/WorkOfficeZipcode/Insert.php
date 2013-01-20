@@ -1,6 +1,6 @@
 <?php
 
-namespace Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode;
+namespace Contrib\JapanZipcodeBundle\Adapter\WorkOfficeZipcode;
 
 class Insert extends BaseAdapter
 {

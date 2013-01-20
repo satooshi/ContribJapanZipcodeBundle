@@ -6,6 +6,8 @@ use Contrib\JapanZipcodeBundle\Adapter\RepositoryAdapter;
 
 abstract class BaseAdapter extends RepositoryAdapter
 {
+    const TABLE_NAME = 'home_zipcode';
+
     public function getTypes()
     {
         return array(

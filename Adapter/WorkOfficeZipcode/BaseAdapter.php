@@ -1,12 +1,12 @@
 <?php
 
-namespace Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode;
+namespace Contrib\JapanZipcodeBundle\Adapter\WorkOfficeZipcode;
 
 use Contrib\JapanZipcodeBundle\Adapter\RepositoryAdapter;
 
 abstract class BaseAdapter extends RepositoryAdapter
 {
-    const TABLE_NAME = 'w_home_zipcode';
+    const TABLE_NAME = 'w_office_zipcode';
 
     public function getTypes()
     {
@@ -18,15 +18,13 @@ abstract class BaseAdapter extends RepositoryAdapter
             'pref' => 'string',
             'city' => 'string',
             'town' => 'string',
-            'pref_kana' => 'string',
-            'city_kana' => 'string',
-            'town_kana' => 'string',
+            'street' => 'string',
+            'office_name' => 'string',
+            'office_name_kana' => 'string',
+            'branch_name' => 'string',
             'flg1' => 'int',
             'flg2' => 'int',
             'flg3' => 'int',
-            'flg4' => 'int',
-            'flg5' => 'int',
-            'flg6' => 'int',
         );
     }
 }

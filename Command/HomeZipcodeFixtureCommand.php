@@ -14,16 +14,11 @@ use Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode\Truncate as TruncateWorkH
 use Contrib\JapanZipcodeBundle\Adapter\HomeZipcode\Truncate as TruncateHomeZipcode;
 use Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode\Count as CountWorkHomeZipcode;
 use Contrib\JapanZipcodeBundle\Adapter\HomeZipcode\Count as CountHomeZipcode;
-use Contrib\JapanZipcodeBundle\Adapter\HomeZipcode\BulkInsertHomeZipcode;
+use Contrib\JapanZipcodeBundle\Adapter\HomeZipcode\BulkInsert;
 
 class HomeZipcodeFixtureCommand extends BaseCommand
 {
     protected $path;
-
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
 
     protected function configure()
     {
@@ -106,7 +101,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
 
     protected function insertHomeZipcode($em)
     {
-        $adapter = new BulkInsertHomeZipcode($em);
+        $adapter = new BulkInsert($em);
 
         return $adapter->execute();
     }

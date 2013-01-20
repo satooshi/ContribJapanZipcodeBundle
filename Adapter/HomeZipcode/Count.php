@@ -6,6 +6,6 @@ class Count extends BaseAdapter
 {
     public function execute()
     {
-        return $this->count('home_zipcode');
+        return $this->count();
     }
 }

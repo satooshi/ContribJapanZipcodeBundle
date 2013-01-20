@@ -4,6 +4,8 @@ namespace Contrib\JapanZipcodeBundle\Adapter;
 
 abstract class RepositoryAdapter
 {
+    const TABLE_NAME = '';
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
@@ -162,12 +164,11 @@ abstract class RepositoryAdapter
     /**
      * Execute count query.
      *
-     * @param string $tableName
      * @return integer
      */
-    protected function count($tableName)
+    protected function count()
     {
-        $sql = sprintf('select count(*) count from %s', $tableName);
+        $sql = sprintf('select count(*) count from %s', static::TABLE_NAME);
 
         return $this->executeScalar($sql);
     }
@@ -175,17 +176,16 @@ abstract class RepositoryAdapter
     /**
      * Execute insert statement.
      *
-     * @param string $tableName Table name.
-     * @param array  $params    [col1 => value1, col2 => value2]
-     * @param array  $types     [col1 => type1, col2 => type2]
+     * @param array  $params [col1 => value1, col2 => value2]
+     * @param array  $types  [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function insert($tableName, $params, $types = array(), $useCachedSql = false)
+    protected function insert($params, $types = array(), $useCachedSql = false)
     {
         if (!$this->useCache($useCachedSql)) {
             $this->sql = sprintf(
                 "insert into %s (%s) values (%s)",
-                $tableName,
+                static::TABLE_NAME,
                 implode(', ', array_keys($params)),
                 implode(', ', array_map(function ($param) { return '?';}, $params))
             );
@@ -199,12 +199,11 @@ abstract class RepositoryAdapter
     /**
      * Execute multiple insert statement.
      *
-     * @param string $tableName Table name.
-     * @param array  $params    [col1 => value1, col2 => value2]
-     * @param array  $types     [col1 => type1, col2 => type2]
+     * @param array  $params [col1 => value1, col2 => value2]
+     * @param array  $types  [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function multipleInsert($tableName, $params, $types = array(), $useCachedSql = false)
+    protected function multipleInsert($params, $types = array(), $useCachedSql = false)
     {
         if (count($params) === 0) {
             return 0;
@@ -226,7 +225,7 @@ abstract class RepositoryAdapter
         if (!$this->useCache($useCachedSql)) {
             $this->sql = sprintf(
                 "insert into %s (%s) values %s",
-                $tableName,
+                static::TABLE_NAME,
                 implode(', ', array_keys($params[0])),
                 implode(', ', $valuesPlaceHolders)
             );
@@ -248,19 +247,18 @@ abstract class RepositoryAdapter
     /**
      * Execute update statement.
      *
-     * @param string $tableName      Table name.
-     * @param array  $params         [col1 => value1, col2 => value2]
-     * @param array  $types          [col1 => type1, col2 => type2]
-     * @param array  $identifiers    [col1 => value1, col2 => value2]
-     * @param array $identifierTypes [col1 => type1, col2 => type2]
+     * @param array  $params          [col1 => value1, col2 => value2]
+     * @param array  $types           [col1 => type1, col2 => type2]
+     * @param array  $identifiers     [col1 => value1, col2 => value2]
+     * @param array  $identifierTypes [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function update($tableName, $params, $types = array(), $identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
+    protected function update($params, $types = array(), $identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
     {
         if (!$this->useCache($useCachedSql)) {
             $sql = sprintf(
                 "update %s set %s",
-                $tableName,
+                static::TABLE_NAME,
                 implode(', ', array_keys($params)),
                 implode(', ', array_map(function ($param) { return '?';}, $params))
             );
@@ -294,15 +292,14 @@ abstract class RepositoryAdapter
     /**
      * Execute delete statement.
      *
-     * @param string $tableName       Table name.
      * @param array  $identifiers     [col1 => value1, col2 => value2]
      * @param array  $identifierTypes [col1 => type1, col2 => type2]
      * @return integer
      */
-    protected function delete($tableName, $identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
+    protected function delete($identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
     {
         if (!$this->useCache($useCachedSql)) {
-            $sql = sprintf("delete from %s", $tableName);
+            $sql = sprintf("delete from %s", static::TABLE_NAME);
         }
 
         if (count($identifiers) > 0) {
@@ -329,12 +326,11 @@ abstract class RepositoryAdapter
     /**
      * Execute truncate statement.
      *
-     * @param string $tableName
      * @return integer
      */
-    protected function truncate($tableName)
+    protected function truncate()
     {
-        $sql = sprintf('truncate %s', $tableName);
+        $sql = sprintf('truncate %s', static::TABLE_NAME);
 
         return $this->driver->exec($sql);
     }

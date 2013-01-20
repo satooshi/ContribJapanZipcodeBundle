@@ -2,16 +2,16 @@
 
 namespace Contrib\JapanZipcodeBundle\Adapter\HomeZipcode;
 
-class BulkInsertHomeZipcode extends BaseAdapter
+class BulkInsert extends BaseAdapter
 {
     public function execute()
     {
-        $sql = $this->getInsertHomeZipCode();
+        $sql = $this->getInsertHomeZipcode();
 
         return $this->executeUpdate($sql);
     }
 
-    protected function getInsertHomeZipCode()
+    protected function getInsertHomeZipcode()
     {
         return "
 insert

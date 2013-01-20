@@ -8,9 +8,10 @@ class FindByZipcode extends BaseAdapter
     {
         $sql = "select
             id, zipcode, pref, city, town, street, office_name officeName, office_name_kana officeNameKana, branch_name branchName
-            from office_zipcode
+            from %s
             where zipcode = ?
             limit ? offset ?";
+        $sql = sprintf($sql, static::TABLE_NAME);
 
         $params = array(
             1 => array($zipcode, 'string'),
