@@ -2,9 +2,7 @@
 
 namespace Contrib\JapanZipcodeBundle\Adapter\OfficeZipcode;
 
-use Contrib\JapanZipcodeBundle\Adapter\RepositoryAdapter;
-
-class FindByZipcode extends RepositoryAdapter
+class FindByZipcode extends BaseAdapter
 {
     public function execute($zipcode, $limit = 100, $offset = 0)
     {
