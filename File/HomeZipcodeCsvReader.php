@@ -83,7 +83,7 @@ class HomeZipcodeCsvReader extends CsvSequentialReader
     {
         $this->entitySet[] = $this->map($this->convert($items));
 
-        if ($numLine % 25 == 0) {
+        if ($numLine % 35 == 0) {
             $this->insert();
         }
 
