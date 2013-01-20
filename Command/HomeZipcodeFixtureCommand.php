@@ -30,16 +30,16 @@ class HomeZipcodeFixtureCommand extends BaseCommand
 
         // w_home_zipcode
         $driver->beginTransaction();
-        $this->insertWorkHomeZipcode($em, $path);
+        $this->transactWorkHomeZipcode($em, $path);
         $driver->commit();
 
         // home_zip_code
         $driver->beginTransaction();
-        $this->insertHomeZipcode($em);
+        $this->transactHomeZipcode($em);
         $driver->commit();
     }
 
-    protected function insertWorkHomeZipcode($em, $path)
+    protected function transactWorkHomeZipcode($em, $path)
     {
         $this->truncateWorkHomeZipcode($em);
 
@@ -52,7 +52,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         $this->console(sprintf('inserted %d records to work_home_zipcode', $count));
     }
 
-    protected function insertHomeZipcode($em)
+    protected function transactHomeZipcode($em)
     {
         $this->truncateHomeZipcode($em);
         $this->insertHomeZipcode($em);
