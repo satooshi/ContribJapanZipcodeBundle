@@ -106,7 +106,7 @@ abstract class RepositoryAdapter
 
     protected function executeScalar($sql, array $params = array())
     {
-        if (!isset($this->statement)) {
+        if (!isset($this->statement) || $this->statement->queryString !== $sql) {
             $this->statement = $this->prepare($sql);
         }
 
