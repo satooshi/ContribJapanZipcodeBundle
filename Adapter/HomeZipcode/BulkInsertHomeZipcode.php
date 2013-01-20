@@ -56,13 +56,13 @@ from
     ,   t1_1.city
     ,   t1_1.town
     from
-        temp_home_zipcode as t1_1
+        w_home_zipcode as t1_1
         inner join
         (
             select
                 ta1.zipcode
             from
-                temp_home_zipcode as ta1
+                w_home_zipcode as ta1
             group by
                 ta1.zipcode
             having
@@ -82,13 +82,13 @@ from
     ,   t1_2.city
     ,   t1_2.town
     from
-        temp_home_zipcode as t1_2
+        w_home_zipcode as t1_2
         inner join
         (
             select
                 ta1.zipcode
             from
-                temp_home_zipcode as ta1
+                w_home_zipcode as ta1
             where
                 ta1.flg4 = 1
             group by
@@ -148,14 +148,14 @@ from
                 tb1.*
             ,   tb1.id - tb2.min_id + 1 as row_id
             from
-                temp_home_zipcode as tb1
+                w_home_zipcode as tb1
                 inner join
                 (
                     select
                         tc1.zipcode
                     ,   min(tc1.id) as min_id
                     from
-                        temp_home_zipcode as tc1
+                        w_home_zipcode as tc1
                     where
                         tc1.flg4 = 0
                     group by
