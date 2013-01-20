@@ -25,6 +25,13 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         $this->path = $path;
     }
 
+    protected function configure()
+    {
+        $this
+            ->setName('contrib:japan-zipcode:home-zipcode-fixture')
+            ->setDescription('setup home_zipcode fixture');
+    }
+
     protected function doWork(InputInterface $input)
     {
         // configure csv path
