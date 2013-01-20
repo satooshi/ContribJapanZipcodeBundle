@@ -23,21 +23,37 @@ class OfficeZipcodeFixtureCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('contrib:japan-zipcode:office-zipcode-fixture')
-            ->setDescription('setup office_zipcode fixture');
+        ->setName('contrib:japan-zipcode:office-zipcode-fixture')
+        ->setDescription('setup office_zipcode fixture')
+        ->addOption(
+            'file', // --file
+            'f', // -f /path/to/JIGYOSYO.CSV
+            InputOption::VALUE_REQUIRED,
+            'JIGYOSYO.CSV file path',
+            null
+        );
+    }
+
+    protected function prepareFile(InputInterface $input)
+    {
+        $file = $input->getOption('file');
+
+        if (file_exists($file) && is_file($file) && is_readable($file)) {
+            $this->path = $file;
+        }
     }
 
     protected function doWork(InputInterface $input)
     {
         // configure csv path
-        $path = __DIR__ . '/Fixture/JIGYOSYO.CSV';
+        $this->prepareFile($input);
 
         $em     = $this->getEntityManager();
         $driver = $this->getDatabaseConnection();
 
         // w_office_zipcode
         $driver->beginTransaction();
-        $this->transactWorkOfficeZipcode($em, $path);
+        $this->transactWorkOfficeZipcode($em, $this->path);
         $driver->commit();
 
         // office_zipcode

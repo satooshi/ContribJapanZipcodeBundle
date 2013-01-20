@@ -23,21 +23,37 @@ class HomeZipcodeFixtureCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName('contrib:japan-zipcode:home-zipcode-fixture')
-            ->setDescription('setup home_zipcode fixture');
+        ->setName('contrib:japan-zipcode:home-zipcode-fixture')
+        ->setDescription('setup home_zipcode fixture')
+        ->addOption(
+            'file', // --file
+            'f', // -f /path/to/KEN_ALL.CSV
+            InputOption::VALUE_REQUIRED,
+            'KEN_ALL.CSV file path',
+            null
+        );
+    }
+
+    protected function prepareFile(InputInterface $input)
+    {
+        $file = $input->getOption('file');
+
+        if (file_exists($file) && is_file($file) && is_readable($file)) {
+            $this->path = $file;
+        }
     }
 
     protected function doWork(InputInterface $input)
     {
         // configure csv path
-        $path = __DIR__ . '/Fixture/KEN_ALL.CSV';
+        $this->prepareFile($input);
 
         $em     = $this->getEntityManager();
         $driver = $this->getDatabaseConnection();
 
         // w_home_zipcode
         $driver->beginTransaction();
-        $this->transactWorkHomeZipcode($em, $path);
+        $this->transactWorkHomeZipcode($em, $this->path);
         $driver->commit();
 
         // home_zipcode
