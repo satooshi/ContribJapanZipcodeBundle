@@ -8,6 +8,6 @@ class Insert extends BaseAdapter
     {
         $types = $this->getTypes();
 
-        return $this->multipleInsert('work_home_zipcode', $params, $types);
+        return $this->multipleInsert('w_home_zipcode', $params, $types);
     }
 }

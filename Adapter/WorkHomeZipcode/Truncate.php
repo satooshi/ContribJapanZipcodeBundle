@@ -6,7 +6,7 @@ class Truncate extends BaseAdapter
 {
     public function execute()
     {
-        $sql = 'truncate work_home_zipcode';
+        $sql = 'truncate w_home_zipcode';
 
         return $this->executeStatement($sql);
     }

@@ -61,7 +61,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         $reader->insert();
 
         $count = $this->countWorkHomeZipcode($em);
-        $this->console(sprintf('inserted %d records to work_home_zipcode', $count));
+        $this->console(sprintf('inserted %d records to w_home_zipcode', $count));
     }
 
     protected function transactHomeZipcode($em)
