@@ -1,6 +1,6 @@
 <?php
 
-namespace Contrib\CommonBundle\Adapter\WorkHomeZipcode;
+namespace Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode;
 
 use Contrib\JapanZipcodeBundle\Adapter\RepositoryAdapter;
 
