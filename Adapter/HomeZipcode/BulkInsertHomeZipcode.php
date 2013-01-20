@@ -19,18 +19,6 @@ insert
 select
     t.id
 ,   t.zipcode
-,   t.pref_kana
-,   t.city_kana
-,   case
-        when locate('場合', t.town) <> 0
-        then ''
-        else
-        case
-            when locate('一円', t.town) > 1
-            then ''
-            else t.town_kana
-        end
-    end as town_kana
 ,   t.pref
 ,   t.city
 ,   case
@@ -43,18 +31,30 @@ select
             else t.town
         end
     end as town
+,   t.pref_kana
+,   t.city_kana
+,   case
+        when locate('場合', t.town) <> 0
+        then ''
+        else
+        case
+            when locate('一円', t.town) > 1
+            then ''
+            else t.town_kana
+        end
+    end as town_kana
 from
 (
 -- one town per zip code
     select
         t1_1.id
     ,   t1_1.zipcode
-    ,   t1_1.pref_kana
-    ,   t1_1.city_kana
-    ,   t1_1.town_kana
     ,   t1_1.pref
     ,   t1_1.city
     ,   t1_1.town
+    ,   t1_1.pref_kana
+    ,   t1_1.city_kana
+    ,   t1_1.town_kana
     from
         w_home_zipcode as t1_1
         inner join
@@ -75,12 +75,12 @@ from
     select
         t1_2.id
     ,   t1_2.zipcode
-    ,   t1_2.pref_kana
-    ,   t1_2.city_kana
-    ,   t1_2.town_kana
     ,   t1_2.pref
     ,   t1_2.city
     ,   t1_2.town
+    ,   t1_2.pref_kana
+    ,   t1_2.city_kana
+    ,   t1_2.town_kana
     from
         w_home_zipcode as t1_2
         inner join
@@ -103,6 +103,9 @@ from
     select
         t1_3.id
     ,   t1_3.zipcode
+    ,   t1_3.pref
+    ,   t1_3.city
+    ,   substring_index(concat(t1_3.town_1, t1_3.town_2), '（', 1) as town
     ,   t1_3.pref_kana
     ,   t1_3.city_kana
     ,   case t1_3.town_kana_1
@@ -110,9 +113,6 @@ from
             then t1_3.town_kana_1
             else substring_index(concat(t1_3.town_kana_1, t1_3.town_kana_2), '（', 1)
         end as town_kana
-    ,   t1_3.pref
-    ,   t1_3.city
-    ,   substring_index(concat(t1_3.town_1, t1_3.town_2), '（', 1) as town
     from
     (
         select
