@@ -58,7 +58,7 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         $reader = new HomeZipcodeCsvReader($em, 0);
         $client = new CsvFileClient($path);
         $client->walk(array($reader, 'readline'));
-        $reader->insert();
+        $reader->insert(false);
 
         $count = $this->countWorkHomeZipcode($em);
         $this->console(sprintf('inserted %d records to w_home_zipcode', $count));

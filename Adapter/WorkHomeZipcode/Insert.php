@@ -4,10 +4,10 @@ namespace Contrib\JapanZipcodeBundle\Adapter\WorkHomeZipcode;
 
 class Insert extends BaseAdapter
 {
-    public function execute(array $params)
+    public function execute(array $params, $useCachedSql = true)
     {
         $types = $this->getTypes();
 
-        return $this->multipleInsert('w_home_zipcode', $params, $types);
+        return $this->multipleInsert('w_home_zipcode', $params, $types, $useCachedSql);
     }
 }

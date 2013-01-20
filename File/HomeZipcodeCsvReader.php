@@ -31,6 +31,19 @@ class HomeZipcodeCsvReader extends CsvSequentialReader
         $this->adapter = new Insert($em);
     }
 
+    public function insert($useCachedSql = true)
+    {
+        if (count($this->entitySet) > 0) {
+            $affectedRows = $this->adapter->execute($this->entitySet, $useCachedSql);
+
+            $this->entitySet = array();
+
+            return $affectedRows;
+        }
+
+        return 0;
+    }
+
     // internal API
 
     /**
@@ -77,18 +90,7 @@ class HomeZipcodeCsvReader extends CsvSequentialReader
         return true;
     }
 
-    public function insert()
-    {
-        if (count($this->entitySet) > 0) {
-            $affectedRows = $this->adapter->execute($this->entitySet);
-
-            $this->entitySet = array();
-
-            return $affectedRows;
-        }
-
-        return 0;
-    }
+    // internal method
 
     protected function convert($data)
     {
@@ -119,5 +121,17 @@ class HomeZipcodeCsvReader extends CsvSequentialReader
             'flg5'        => $data[13],
             'flg6'        => $data[14],
         );
+    }
+
+    // accessor
+
+    public function getEntitySet()
+    {
+        return $this->entitySet;
+    }
+
+    public function getAdapter()
+    {
+        return $this->adapter;
     }
 }

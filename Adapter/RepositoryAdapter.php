@@ -7,6 +7,7 @@ abstract class RepositoryAdapter
     protected $em;
     protected $driver;
     protected $statement;
+    protected $sql;
 
     public function __construct($em)
     {
@@ -81,11 +82,16 @@ abstract class RepositoryAdapter
         }
     }
 
+    protected function useCache($useCachedSql)
+    {
+        return isset($this->sql) && $useCachedSql;
+    }
+
     // statement
 
     protected function executeStatement($sql, array $params = array())
     {
-        if (!isset($this->statement)) {
+        if (!isset($this->statement) || $this->statement->queryString !== $sql) {
             $this->statement = $this->prepare($sql);
         }
 
@@ -137,18 +143,20 @@ abstract class RepositoryAdapter
      * @param array  $types     [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function insert($tableName, $params, $types = array())
+    protected function insert($tableName, $params, $types = array(), $useCachedSql = false)
     {
-        $sql = sprintf(
-            "insert into %s (%s) values (%s)",
-            $tableName,
-            implode(', ', array_keys($params)),
-            implode(', ', array_map(function ($param) { return '?';}, $params))
-        );
+        if (!$this->useCache($useCachedSql)) {
+            $this->sql = sprintf(
+                "insert into %s (%s) values (%s)",
+                $tableName,
+                implode(', ', array_keys($params)),
+                implode(', ', array_map(function ($param) { return '?';}, $params))
+            );
+        }
 
         $bindParams = $this->createBindParams($params, $types);
 
-        return $this->executeUpdate($sql, $bindParams);
+        return $this->executeUpdate($this->sql, $bindParams);
     }
 
     /**
@@ -157,31 +165,35 @@ abstract class RepositoryAdapter
      * @param array  $types     [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function multipleInsert($tableName, $params, $types = array())
+    protected function multipleInsert($tableName, $params, $types = array(), $useCachedSql = false)
     {
+        if (count($params) === 0) {
+            return 0;
+        }
+
         $valuesPlaceHolders = array(); // ['(?, ?, ...)', '(?, ?, ...)']
         $bindParams = array();
 
         foreach ($params as $entityParams) {
-            $values = implode(', ', array_map(function ($param) { return '?';}, $entityParams));
-            $valuesPlaceHolders[] = sprintf('(%s)', $values);
+            if (!$this->useCache($useCachedSql)) {
+                $values = implode(', ', array_map(function ($param) { return '?';}, $entityParams));
+                $valuesPlaceHolders[] = sprintf('(%s)', $values);
+            }
 
             $index = count($bindParams) + 1;
             $bindParams += $this->createBindParams($entityParams, $types, $index);
         }
 
-        if (count($params) > 0) {
-            $columns = array_keys($params[0]);
+        if (!$this->useCache($useCachedSql)) {
+            $this->sql = sprintf(
+                "insert into %s (%s) values %s",
+                $tableName,
+                implode(', ', array_keys($params[0])),
+                implode(', ', $valuesPlaceHolders)
+            );
         }
 
-        $sql = sprintf(
-            "insert into %s (%s) values %s",
-            $tableName,
-            implode(', ', $columns),
-            implode(', ', $valuesPlaceHolders)
-        );
-
-        return $this->executeUpdate($sql, $bindParams);
+        return $this->executeUpdate($this->sql, $bindParams);
     }
 
     protected function getLastInsertId()
@@ -197,32 +209,40 @@ abstract class RepositoryAdapter
      * @param array $identifierTypes [col1 => type1, col2 => type2]
      * @return integer Affected rows.
      */
-    protected function update($tableName, $params, $types = array(), $identifiers = array(), $identifierTypes = array())
+    protected function update($tableName, $params, $types = array(), $identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
     {
-        $sql = sprintf(
-            "update %s set %s",
-            $tableName,
-            implode(', ', array_keys($params)),
-            implode(', ', array_map(function ($param) { return '?';}, $params))
-        );
+        if (!$this->useCache($useCachedSql)) {
+            $sql = sprintf(
+                "update %s set %s",
+                $tableName,
+                implode(', ', array_keys($params)),
+                implode(', ', array_map(function ($param) { return '?';}, $params))
+            );
+        }
 
         $updateParams = $this->createBindParams($params, $types);
 
         if (count($identifiers) > 0) {
-            $sql = sprintf(
-                "%s where %s",
-                $sql,
-                implode(' and ', $this->createIdentifiers($identifiers))
-            );
+            if (!$this->useCache($useCachedSql)) {
+                $this->sql = sprintf(
+                    "%s where %s",
+                    $sql,
+                    implode(' and ', $this->createIdentifiers($identifiers))
+                );
+            }
 
             $index = count($updateParams) + 1;
             $idBindParams = $this->createBindParams($identifiers, $identifierTypes, $index);
             $bindParams = $updateParams + $idBindParams;
         } else {
             $bindParams = $updateParams;
+
+            if (!$this->useCache($useCachedSql)) {
+                $this->sql = $sql;
+            }
         }
 
-        return $this->executeUpdate($sql, $bindParams);
+        return $this->executeUpdate($this->sql, $bindParams);
     }
 
     /**
@@ -231,23 +251,31 @@ abstract class RepositoryAdapter
      * @param array  $identifierTypes [col1 => type1, col2 => type2]
      * @return integer
      */
-    protected function delete($tableName, $identifiers = array(), $identifierTypes = array())
+    protected function delete($tableName, $identifiers = array(), $identifierTypes = array(), $useCachedSql = false)
     {
-        $sql = sprintf("delete from %s", $tableName);
+        if (!$this->useCache($useCachedSql)) {
+            $sql = sprintf("delete from %s", $tableName);
+        }
 
         if (count($identifiers) > 0) {
-            $sql = sprintf(
-                "%s where %s",
-                $sql,
-                implode(' and ', $this->createIdentifiers($identifiers))
-            );
+            if (!$this->useCache($useCachedSql)) {
+                $this->sql = sprintf(
+                    "%s where %s",
+                    $sql,
+                    implode(' and ', $this->createIdentifiers($identifiers))
+                );
+            }
 
             $bindParams = $this->createBindParams($identifiers, $identifierTypes);
         } else {
             $bindParams = array();
+
+            if (!$this->useCache($useCachedSql)) {
+                $this->sql = $sql;
+            }
         }
 
-        return $this->executeUpdate($sql, $bindParams);
+        return $this->executeUpdate($this->sql, $bindParams);
     }
 
     // utils
