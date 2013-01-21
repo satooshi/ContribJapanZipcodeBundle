@@ -15,40 +15,37 @@ class BulkInsert extends BaseAdapter
     {
         return "
 insert
-    home_zipcode (id, zipcode, pref_kana, city_kana, town_kana, pref, city, town)
+    home_zipcode (zipcode, pref_kana, city_kana, town_kana, pref, city, town)
 select
-    t.id
-,   t.zipcode
+    distinct
+    t.zipcode
 ,   t.pref_kana
 ,   t.city_kana
 ,   case
         when locate('場合', t.town) <> 0
-        then ''
-        else
-        case
-            when locate('一円', t.town) > 1
             then ''
-            else t.town_kana
-        end
+        when locate('一円', t.town) > 1
+            then ''
+        when locate('（', t.town) > 1
+            then substring_index(t.town_kana, '（', 1)
+        else t.town_kana
     end as town_kana
 ,   t.pref
 ,   t.city
 ,   case
         when locate('場合', t.town) <> 0
-        then ''
-        else
-        case
-            when locate('一円', t.town) > 1
             then ''
-            else t.town
-        end
+        when locate('一円', t.town) > 1
+            then ''
+        when locate('（', t.town) > 1
+            then substring_index(t.town, '（', 1)
+        else t.town
     end as town
 from
 (
 -- one town per zip code
     select
-        t1_1.id
-    ,   t1_1.zipcode
+        t1_1.zipcode
     ,   t1_1.pref_kana
     ,   t1_1.city_kana
     ,   t1_1.town_kana
@@ -73,8 +70,7 @@ from
 
 -- more than one town per zip code
     select
-        t1_2.id
-    ,   t1_2.zipcode
+        t1_2.zipcode
     ,   t1_2.pref_kana
     ,   t1_2.city_kana
     ,   t1_2.town_kana
@@ -96,13 +92,142 @@ from
             having
                 count(ta1.zipcode) > 1
         ) as t2_2 on t1_2.zipcode = t2_2.zipcode
+    where
+        t1_2.town not like '%（%'
+        and
+        t1_2.town not like '%）%'
+        and
+        t1_2.town not like '%地割%'
+
+    union
+
+    select
+        t1_3.zipcode
+    ,   t1_3.pref_kana
+    ,   t1_3.city_kana
+    ,   case
+            when t1_3.town_kana regexp '^.*[０-９]{6}チワリ－.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ－', t1_3.town_kana)+3))
+            when t1_3.town_kana regexp '^.*[０-９]{3}チワリ－.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ－', t1_3.town_kana)+2))
+            when t1_3.town_kana regexp '^.*[０-９]{5}チワリ、.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ、', t1_3.town_kana)+3))
+            when t1_3.town_kana regexp '^.*[０-９]{3}チワリ、.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ、', t1_3.town_kana)+2))
+            when t1_3.town_kana regexp '^.*[０-９]{6}チワリ$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ', t1_3.town_kana)+3))
+            when t1_3.town_kana regexp '^.*[０-９]{3}チワリ$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ', t1_3.town_kana)+2))
+            when t1_3.town_kana regexp '^.*[０-９]{6}チワリ.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ', t1_3.town_kana)+3))
+            when t1_3.town_kana regexp '^.*[０-９]{3}チワリ.*$' = 1
+                then reverse(substring(reverse(t1_3.town_kana), - locate('チワリ', t1_3.town_kana)+2))
+            else t1_3.town_kana
+        end as town_kana
+    ,   t1_3.pref
+    ,   t1_3.city
+    ,   case
+            when t1_3.town regexp '^.*[０-９]{6}地割〜.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割〜', t1_3.town)+3))
+            when t1_3.town regexp '^.*[０-９]{3}地割〜.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割〜', t1_3.town)+2))
+            when t1_3.town regexp '^.*[０-９]{6}地割、.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割、', t1_3.town)+3))
+            when t1_3.town regexp '^.*[０-９]{3}地割、.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割、', t1_3.town)+2))
+            when t1_3.town regexp '^.*[０-９]{6}地割$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割', t1_3.town)+3))
+            when t1_3.town regexp '^.*[０-９]{3}地割$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割', t1_3.town)+2))
+            when t1_3.town regexp '^.*[０-９]{6}地割.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割', t1_3.town)+3))
+            when t1_3.town regexp '^.*[０-９]{3}地割.*$' = 1
+                then reverse(substring(reverse(t1_3.town), - locate('地割', t1_3.town)+2))
+            else t1_3.town
+        end as town
+    from
+        w_home_zipcode as t1_3
+        inner join
+        (
+            select
+                ta1.zipcode
+            from
+                w_home_zipcode as ta1
+            where
+                ta1.flg4 = 1
+            group by
+                ta1.zipcode
+            having
+                count(ta1.zipcode) > 1
+        ) as t2_3 on t1_3.zipcode = t2_3.zipcode
+    where
+        t1_3.town like '%地割%'
+
+    union
+
+    select
+        t1_4.zipcode
+    ,   t1_4.pref_kana
+    ,   t1_4.city_kana
+    ,   substring_index(t1_4.town_kana, '（', 1) as town_kana
+    ,   t1_4.pref
+    ,   t1_4.city
+    ,   substring_index(t1_4.town, '（', 1) as town
+    from
+        w_home_zipcode as t1_4
+        inner join
+        (
+            select
+                ta1.zipcode
+            from
+                w_home_zipcode as ta1
+            where
+                ta1.flg4 = 1
+            group by
+                ta1.zipcode
+            having
+                count(ta1.zipcode) > 1
+        ) as t2_2 on t1_4.zipcode = t2_2.zipcode
+    where
+        t1_4.town like '%（%'
+        and
+        t1_4.town not like '%地割%'
+
+    union
+
+    select
+        t1_5.zipcode
+    ,   t1_5.pref_kana
+    ,   t1_5.city_kana
+    ,   '' as town_kana
+    ,   t1_5.pref
+    ,   t1_5.city
+    ,   '' as town
+    from
+        w_home_zipcode as t1_5
+        inner join
+        (
+            select
+                ta1.zipcode
+            from
+                w_home_zipcode as ta1
+            where
+                ta1.flg4 = 1
+            group by
+                ta1.zipcode
+            having
+                count(ta1.zipcode) > 1
+        ) as t2_2 on t1_5.zipcode = t2_2.zipcode
+    where
+        t1_5.town not like '%（%'
+        and
+        t1_5.town like '%）%'
 
     union
 
 -- one town divided into multiple records per zip code
     select
-        t1_3.id
-    ,   t1_3.zipcode
+        t1_3.zipcode
     ,   t1_3.pref_kana
     ,   t1_3.city_kana
     ,   case t1_3.town_kana_1
