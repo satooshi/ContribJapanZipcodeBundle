@@ -18,8 +18,8 @@
         "symfony/symfony": ">=2.1",
         "sensio/framework-extra-bundle": ">=2.1",
         "jms/serializer-bundle": "0.9.0",
-        "satooshi/symfony2contrib-common-bundle": "dev-master",
-        "satooshi/symfony2contrib-http-foundation-extra-bundle": "dev-master"
+        "satooshi/symfony2contrib-common-bundle": "0.1.*",
+        "satooshi/symfony2contrib-http-foundation-extra-bundle": "0.1.*"
     },
     "autoload": {
         "psr-0": { "Contrib\\Bundle\\JapanZipcodeBundle": "src/" }
