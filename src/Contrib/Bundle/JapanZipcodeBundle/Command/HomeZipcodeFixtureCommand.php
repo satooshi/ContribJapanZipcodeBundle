@@ -26,9 +26,9 @@ class HomeZipcodeFixtureCommand extends BaseCommand
         ->setDescription('setup home_zipcode fixture')
         ->addOption(
             'file', // --file
-            'f', // -f /path/to/KEN_ALL.CSV
+            'f', // -f /path/to/ken_all.csv
             InputOption::VALUE_REQUIRED,
-            'KEN_ALL.CSV file path',
+            'ken_all.csv file path',
             null
         );
     }

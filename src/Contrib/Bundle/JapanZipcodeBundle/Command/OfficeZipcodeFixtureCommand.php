@@ -26,9 +26,9 @@ class OfficeZipcodeFixtureCommand extends BaseCommand
         ->setDescription('setup office_zipcode fixture')
         ->addOption(
             'file', // --file
-            'f', // -f /path/to/JIGYOSYO.CSV
+            'f', // -f /path/to/jigyosyo.csv
             InputOption::VALUE_REQUIRED,
-            'JIGYOSYO.CSV file path',
+            'jigyosyo.csv file path',
             null
         );
     }
