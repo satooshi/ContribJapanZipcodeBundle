@@ -2,7 +2,7 @@
 
 namespace Contrib\Bundle\JapanZipcodeBundle\Command;
 
-use Contrib\CommonBundle\Command\AbstractCommand;
+use Contrib\Bundle\CommonBundle\Command\AbstractCommand;
 
 abstract class BaseCommand extends AbstractCommand
 {

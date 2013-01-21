@@ -4,7 +4,7 @@ namespace Contrib\Bundle\JapanZipcodeBundle\File;
 
 use Doctrine\ORM\EntityManager;
 use Contrib\Bundle\JapanZipcodeBundle\Adapter\WorkOfficeZipcode\Insert;
-use Contrib\CommonBundle\File\CsvSequentialReader;
+use Contrib\Bundle\CommonBundle\File\CsvSequentialReader;
 
 class OfficeZipcodeCsvReader extends CsvSequentialReader
 {
@@ -14,7 +14,7 @@ class OfficeZipcodeCsvReader extends CsvSequentialReader
     protected $entitySet = array();
 
     /**
-     * @var \Contrib\CommonBundle\Adapter\WorkOfficeZipcode\Insert
+     * @var \Contrib\Bundle\CommonBundle\Adapter\WorkOfficeZipcode\Insert
     */
     protected $adapter;
 
@@ -49,7 +49,7 @@ class OfficeZipcodeCsvReader extends CsvSequentialReader
     /**
      * {@inheritdoc}
      *
-     * @see \Contrib\CommonBundle\File\CsvSequentialReader::assertHeader()
+     * @see \Contrib\Bundle\CommonBundle\File\CsvSequentialReader::assertHeader()
      */
     protected function assertHeader($items, $numLine, $length)
     {
@@ -58,7 +58,7 @@ class OfficeZipcodeCsvReader extends CsvSequentialReader
     /**
      * {@inheritdoc}
      *
-     * @see \Contrib\CommonBundle\File\CsvSequentialReader::assertBody()
+     * @see \Contrib\Bundle\CommonBundle\File\CsvSequentialReader::assertBody()
      */
     protected function assertBody($items, $numLine, $length)
     {
@@ -67,7 +67,7 @@ class OfficeZipcodeCsvReader extends CsvSequentialReader
     /**
      * {@inheritdoc}
      *
-     * @see \Contrib\CommonBundle\File\CsvSequentialReader::processHeader()
+     * @see \Contrib\Bundle\CommonBundle\File\CsvSequentialReader::processHeader()
      */
     protected function processHeader($items, $numLine, $length)
     {
@@ -77,7 +77,7 @@ class OfficeZipcodeCsvReader extends CsvSequentialReader
     /**
      * {@inheritdoc}
      *
-     * @see \Contrib\CommonBundle\File\CsvSequentialReader::processBody()
+     * @see \Contrib\Bundle\CommonBundle\File\CsvSequentialReader::processBody()
      */
     protected function processBody($items, $numLine, $length)
     {
