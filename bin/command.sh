@@ -18,7 +18,7 @@ unzip jigyosyo.zip
 iconv -f cp932 -t utf8 ken_all.csv > ken_all_iconv.csv
 iconv -f cp932 -t utf8 jigyosyo.csv > jigyosyo_iconv.csv
 
-php app/console contrib:japan-zipcode:home-zipcode-fixture -f ken_all_iconv.csv
-php app/console contrib:japan-zipcode:office-zipcode-fixture -f jigyosyo_iconv.csv
+php app/console contrib:japan-zipcode:home-zipcode-fixture -f ken_all_iconv.csv $*
+php app/console contrib:japan-zipcode:office-zipcode-fixture -f jigyosyo_iconv.csv $*
 
 rm -f ken_all.csv ken_all_iconv.csv jigyosyo.csv jigyosyo_iconv.csv ken_all.zip jigyosyo.zip
