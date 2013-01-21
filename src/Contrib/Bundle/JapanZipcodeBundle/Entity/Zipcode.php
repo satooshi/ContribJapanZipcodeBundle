@@ -4,7 +4,7 @@ namespace Contrib\Bundle\JapanZipcodeBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
+use JMS\SerializerBundle\Annotation\Groups;
 
 class Zipcode
 {

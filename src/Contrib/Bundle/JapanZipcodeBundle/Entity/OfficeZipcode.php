@@ -4,8 +4,8 @@ namespace Contrib\Bundle\JapanZipcodeBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\Groups;
+use JMS\SerializerBundle\Annotation\SerializedName;
 
 /**
  * Contrib\Bundle\JapanZipcodeBundle\Entity\OfficeZipcode

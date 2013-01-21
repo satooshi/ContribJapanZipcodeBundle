@@ -4,8 +4,8 @@ namespace Contrib\Bundle\JapanZipcodeBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
+use JMS\SerializerBundle\Annotation\Groups;
+use JMS\SerializerBundle\Annotation\SerializedName;
 
 class WorkZipcode
 {
@@ -34,6 +34,7 @@ class WorkZipcode
      * @ORM\Column(name="old_zipcode", type="string", length=5, nullable=false)
      * @Assert\Length(min=5, max=5)
      * @Groups({"list", "detail"})
+     * @SerializedName("oldZipcode")
      */
     protected $oldZipcode;
 
