@@ -22,7 +22,7 @@
         "satooshi/symfony2contrib-http-foundation-extra-bundle": "dev-master"
     },
     "autoload": {
-        "psr-0": { "Contrib\\JapanZipcodeBundle": "" }
+        "psr-0": { "Contrib\\Bundle\\JapanZipcodeBundle": "src/" }
     },
-    "target-dir": "Contrib/JapanZipcodeBundle"
+    "target-dir": "Contrib/Bundle/JapanZipcodeBundle"
 }
