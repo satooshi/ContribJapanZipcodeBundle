@@ -6,6 +6,7 @@ var defaultOptions = {
     prefInputId: '#form_pref',
     cityInputId: '#form_city',
     townInputId: '#form_town',
+    streetInputId: '#form_street',
     zipcodeInputId: '#form_zipcode',
 
     selectContainerId: '#zipcode-search-select-container',
@@ -31,21 +32,22 @@ var Zipcode = (function() {
     Zipcode.fn = Zipcode.prototype;
 
     // class method
-    Zipcode.setResult = function(options, pref, city, town) {
+    Zipcode.setResult = function(options, pref, city, town, street) {
         $(options.prefInputId).val(pref);
         $(options.cityInputId).val(city);
         $(options.townInputId).val(town);
+        $(options.streetInputId).val(street);
     };
 
     Zipcode.clearResult = function(options) {
-        Zipcode.setResult(options, '', '', '');
+        Zipcode.setResult(options, '', '', '', '');
         $(options.selectContainerId).text('');
     };
 
     Zipcode.updateResult = function(options, addresses, idx) {
         if (addresses[idx]) {
             obj = addresses[idx].obj;
-            Zipcode.setResult(options, obj.pref, obj.city, obj.street ? obj.town + obj.street : obj.town);
+            Zipcode.setResult(options, obj.pref, obj.city, obj.town, obj.street ? obj.street : '');
         }
     };
 
@@ -116,8 +118,8 @@ var Zipcode = (function() {
         }
     };
 
-    Zipcode.fn.setResult = function(pref, city, town) {
-        Zipcode.setResult(this.options, pref, city, town);
+    Zipcode.fn.setResult = function(pref, city, town, street) {
+        Zipcode.setResult(this.options, pref, city, town, street);
     };
 
     Zipcode.fn.clearResult = function() {
