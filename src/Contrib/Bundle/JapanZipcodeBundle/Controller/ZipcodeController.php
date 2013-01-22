@@ -19,44 +19,53 @@ class ZipcodeController extends Controller
     // action
 
     /**
-     * @Route("/{zipcode}",
-     *     name = "zipcode_list",
-     *     requirements = { "zipcode": "\d{7}" }
-     * )
+     * @Route("/", name = "zipcode_list")
      * @Method("GET")
      * @Json(serialize = true, serializeGroups = {"list"})
      */
-    public function listAction($zipcode)
+    public function listAction(Request $request)
     {
+        $zipcode = $request->get('zipcode', null);
+
+        if (!is_numeric($zipcode)) {
+            throw $this->createNotFoundException('Could not find zip code');
+        }
+
         return array(
-            'home'   => $this->listHomeAction($zipcode),
-            'office' => $this->listOfficeZipcodeAction($zipcode),
+            'home'   => $this->listHomeAction($request),
+            'office' => $this->listOfficeZipcodeAction($request),
         );
     }
 
     /**
-     * @Route("/home/{zipcode}",
-     *     name = "zipcode_home_list",
-     *     requirements = { "zipcode": "\d{7}" }
-     * )
+     * @Route("/home", name = "zipcode_home_list")
      * @Method("GET")
      * @Json(serialize = true, serializeGroups = {"list"})
      */
-    public function listHomeAction($zipcode)
+    public function listHomeAction(Request $request)
     {
+        $zipcode = $request->get('zipcode', null);
+
+        if (!is_numeric($zipcode)) {
+            throw $this->createNotFoundException('Could not find zip code');
+        }
+
         return $this->getHomeZipcodeRepository()->findByZipcode($zipcode);
     }
 
     /**
-     * @Route("/office/{zipcode}",
-     *     name = "zipcode_office_list",
-     *     requirements = { "zipcode": "\d{7}" }
-     * )
+     * @Route("/office", name = "zipcode_office_list")
      * @Method("GET")
      * @Json(serialize = true, serializeGroups = {"list"})
      */
-    public function listOfficeZipcodeAction($zipcode)
+    public function listOfficeZipcodeAction(Request $request)
     {
+        $zipcode = $request->get('zipcode', null);
+
+        if (!is_numeric($zipcode)) {
+            throw $this->createNotFoundException('Could not find zip code');
+        }
+
         return $this->getOfficeZipcodeRepository()->findByZipcode($zipcode);
     }
 
