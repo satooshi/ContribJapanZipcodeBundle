@@ -76,11 +76,14 @@ var Zipcode = (function() {
         return $options;
     };
 
-    Zipcode.newSelect = function(options, addresses, children) {
+    Zipcode.newSelect = function(options, addresses, children, callback) {
         return $('<select></select>')
         .css(options.selectStyle)
-        .change(function() {
+        .on('change', function() {
             Zipcode.updateResult(options, addresses, $(this).val());
+            if (callback) {
+                callback();
+            }
         })
         .append(children);
     };
@@ -129,8 +132,8 @@ var Zipcode = (function() {
         return Zipcode.newOptions(this.addresses, this.options);
     };
 
-    Zipcode.fn.newSelect = function() {
-        return Zipcode.newSelect(this.options, this.addresses, this.newOptions());
+    Zipcode.fn.newSelect = function(callback) {
+        return Zipcode.newSelect(this.options, this.addresses, this.newOptions(), callback);
     };
 
     Zipcode.fn.init.prototype = Zipcode.fn;
@@ -149,7 +152,7 @@ var Event = (function() {
     };
     Event.fn = Event.prototype;
 
-    Event.success = function(z) {
+    Event.success = function(z, callback) {
         return function(data) {
             var length;
 
@@ -167,7 +170,11 @@ var Event = (function() {
             } else if (length == 1) {
                 Event.updateResult(z)();
             } else {
-                Event.updateResults(z)();
+                Event.updateResults(z, callback)();
+            }
+
+            if (callback) {
+                callback();
             }
         };
     };
@@ -176,27 +183,27 @@ var Event = (function() {
             z.updateResult(0);
         };
     };
-    Event.updateResults = function(z) {
+    Event.updateResults = function(z, callback) {
         return function() {
-            $(z.options.selectContainerId).append(z.newSelect());
+            $(z.options.selectContainerId).append(z.newSelect(callback));
         };
     };
     Event.resultNotFound = function(z) {
         return function() {
-            alert(z.options.errorMessage);
+            $(z.options.selectContainerId).append(z.options.errorMessage);
         };
     };
     Event.error = function(z) {
         return function() {
-            alert(z.options.errorMessage);
+            $(z.options.selectContainerId).append(z.options.errorMessage);
         };
     };
-    Event.click = function(options) {
+    Event.click = function(options, callback) {
         // vars
         var clicked = false, z = Zipcode(options);
 
         // on click search button
-        $(z.options.searchBtnId).click(function() {
+        $(z.options.searchBtnId).on('click', function() {
             var zipcode = $(z.options.zipcodeInputId).val();
 
             if (clicked) {
@@ -206,7 +213,7 @@ var Event = (function() {
             clicked = true;
 
             // ajax get to zip search api
-            $.getJSON(z.options.url, { zipcode: zipcode }, Event.success(z))
+            $.getJSON(z.options.url, { zipcode: zipcode }, Event.success(z, callback))
             .error(Event.error(z));
 
             clicked = false;
