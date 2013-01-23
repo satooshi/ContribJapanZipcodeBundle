@@ -208,6 +208,10 @@ var Event = (function() {
         $(z.options.searchBtnId).on('click', function() {
             var zipcode = $(z.options.zipcodeInputId).val();
 
+            if (z.options.condition && !z.options.condition(zipcode)) {
+                return false;
+            }
+
             if (clicked) {
                 return false;
             }
