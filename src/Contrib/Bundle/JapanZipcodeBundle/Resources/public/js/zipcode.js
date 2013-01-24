@@ -3,15 +3,16 @@
 // config
 var defaultOptions = {
     url: '/api/zipcode/',
-    prefInputId: '#form_pref',
-    cityInputId: '#form_city',
-    townInputId: '#form_town',
-    streetInputId: '#form_street',
-    zipcodeInputId: '#form_zipcode',
+    prefInput: '#form_pref',
+    cityInput: '#form_city',
+    townInput: '#form_town',
+    streetInput: '#form_street',
+    zipcodeInput: '#form_zipcode',
 
-    selectContainerId: '#zipcode-search-select-container',
-    searchBtnId: '#zipcode-search-btn',
-    selectStyle: { width: '300px' },
+    selectContainer: '#zipcode-search-select-container',
+    searchBtn: '#zipcode-search-btn',
+
+    selectStyle: {},
     nonOption: '以下から選択して下さい',
 
     errorMessage: '該当する住所が見つかりませんでした。',
@@ -33,15 +34,15 @@ var Zipcode = (function() {
 
     // class method
     Zipcode.setResult = function(options, pref, city, town, street) {
-        $(options.prefInputId).val(pref);
-        $(options.cityInputId).val(city);
-        $(options.townInputId).val(town);
-        $(options.streetInputId).val(street);
+        $(options.prefInput).val(pref);
+        $(options.cityInput).val(city);
+        $(options.townInput).val(town);
+        $(options.streetInput).val(street);
     };
 
     Zipcode.clearResult = function(options) {
         Zipcode.setResult(options, '', '', '', '');
-        $(options.selectContainerId).text('');
+        $(options.selectContainer).text('');
     };
 
     Zipcode.updateResult = function(options, addresses, idx) {
@@ -187,14 +188,14 @@ var Event = (function() {
             z.updateResult(0);
 
             if (z.options.updateResult) {
-                selectContainer = $(z.options.selectContainerId);
+                selectContainer = $(z.options.selectContainer);
                 z.options.updateResult(z, selectContainer);
             }
         };
     };
     Event.updateResults = function(z) {
         return function() {
-            var selectContainer = $(z.options.selectContainerId).append(z.newSelect());
+            var selectContainer = $(z.options.selectContainer).append(z.newSelect());
 
             if (z.options.updateResults) {
                 z.options.updateResults(z, selectContainer);
@@ -203,7 +204,7 @@ var Event = (function() {
     };
     Event.resultNotFound = function(z) {
         return function() {
-            var selectContainer = $(z.options.selectContainerId).append(z.options.errorMessage);
+            var selectContainer = $(z.options.selectContainer).append(z.options.errorMessage);
 
             if (z.options.resultNotFound) {
                 z.options.resultNotFound(z, selectContainer);
@@ -212,7 +213,7 @@ var Event = (function() {
     };
     Event.error = function(z) {
         return function() {
-            var selectContainer = $(z.options.selectContainerId).append(z.options.errorMessage);
+            var selectContainer = $(z.options.selectContainer).append(z.options.errorMessage);
 
             if (z.options.error) {
                 z.options.error(z, selectContainer);
@@ -224,8 +225,8 @@ var Event = (function() {
         var clicked = false, z = Zipcode(options);
 
         // on click search button
-        $(z.options.searchBtnId).on('click', function() {
-            var zipcode = $(z.options.zipcodeInputId).val();
+        $(z.options.searchBtn).on('click', function() {
+            var zipcode = $(z.options.zipcodeInput).val();
 
             if (z.options.condition && !z.options.condition(z, zipcode)) {
                 return false;
