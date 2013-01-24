@@ -78,16 +78,16 @@ var Zipcode = (function() {
         return $options;
     };
 
-    Zipcode.newSelect = function(options, addresses, children, callback) {
+    Zipcode.newSelect = function(options, addresses, children) {
         return $('<select></select>')
         .css(options.selectStyle)
+        .append(children)
         .on('change', function() {
             Zipcode.updateResult(options, addresses, $(this).val());
-            if (callback) {
-                callback();
+            if (options.changeSelected) {
+                options.changeSelected(this, options);
             }
-        })
-        .append(children);
+        });
     };
 
     // instance method
@@ -134,8 +134,8 @@ var Zipcode = (function() {
         return Zipcode.newOptions(this.addresses, this.options);
     };
 
-    Zipcode.fn.newSelect = function(callback) {
-        return Zipcode.newSelect(this.options, this.addresses, this.newOptions(), callback);
+    Zipcode.fn.newSelect = function() {
+        return Zipcode.newSelect(this.options, this.addresses, this.newOptions());
     };
 
     Zipcode.fn.init.prototype = Zipcode.fn;
@@ -154,7 +154,7 @@ var Event = (function() {
     };
     Event.fn = Event.prototype;
 
-    Event.success = function(z, callback) {
+    Event.success = function(z) {
         return function(data) {
             var length;
 
@@ -172,35 +172,54 @@ var Event = (function() {
             } else if (length == 1) {
                 Event.updateResult(z)();
             } else {
-                Event.updateResults(z, callback)();
+                Event.updateResults(z)();
             }
 
-            if (callback) {
-                callback();
+            if (z.options.success) {
+                z.options.success(z);
             }
         };
     };
     Event.updateResult = function(z) {
         return function() {
+            var selectContainer;
+
             z.updateResult(0);
+
+            if (z.options.updateResult) {
+                selectContainer = $(z.options.selectContainerId);
+                z.options.updateResult(z, selectContainer);
+            }
         };
     };
-    Event.updateResults = function(z, callback) {
+    Event.updateResults = function(z) {
         return function() {
-            $(z.options.selectContainerId).append(z.newSelect(callback));
+            var selectContainer = $(z.options.selectContainerId).append(z.newSelect());
+
+            if (z.options.updateResults) {
+                z.options.updateResults(z, selectContainer);
+            }
         };
     };
     Event.resultNotFound = function(z) {
         return function() {
-            $(z.options.selectContainerId).append(z.options.errorMessage);
+            var selectContainer = $(z.options.selectContainerId).append(z.options.errorMessage);
+
+            if (z.options.resultNotFound) {
+                z.options.resultNotFound(z, selectContainer);
+            }
         };
     };
     Event.error = function(z) {
         return function() {
-            $(z.options.selectContainerId).append(z.options.errorMessage);
+            var selectContainer = $(z.options.selectContainerId).append(z.options.errorMessage);
+
+            if (z.options.error) {
+                z.options.error(z, selectContainer);
+            }
         };
     };
-    Event.click = function(options, callback) {
+    Event.click = function(options) {
         // vars
         var clicked = false, z = Zipcode(options);
 
@@ -208,7 +227,7 @@ var Event = (function() {
         $(z.options.searchBtnId).on('click', function() {
             var zipcode = $(z.options.zipcodeInputId).val();
 
-            if (z.options.condition && !z.options.condition(zipcode)) {
+            if (z.options.condition && !z.options.condition(z, zipcode)) {
                 return false;
             }
 
@@ -219,7 +238,7 @@ var Event = (function() {
             clicked = true;
 
             // ajax get to zip search api
-            $.getJSON(z.options.url, { zipcode: zipcode }, Event.success(z, callback))
+            $.getJSON(z.options.url, { zipcode: zipcode }, Event.success(z))
             .error(Event.error(z));
 
             clicked = false;
