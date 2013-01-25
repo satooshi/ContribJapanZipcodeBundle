@@ -54,6 +54,18 @@ class Zipcode
      */
     protected $town;
 
+    // presentation logic
+
+    /**
+     * Return address.
+     *
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->pref . $this->city . $this->town;
+    }
+
     // accessor
 
     /**

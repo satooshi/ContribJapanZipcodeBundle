@@ -59,6 +59,18 @@ class OfficeZipcode extends Zipcode
      */
     protected $branchName;
 
+    // presentation logic
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \Contrib\Bundle\JapanZipcodeBundle\Entity\Zipcode::getAddress()
+     */
+    public function getAddress()
+    {
+        return $this->pref . $this->city . $this->town . $this->street;
+    }
+
     // accessor
 
     /**
